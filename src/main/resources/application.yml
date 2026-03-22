@@ -11,9 +11,3 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui/index.html
-logging:
-  level:
-    root: DEBUG
-    org.springframework.web: DEBUG # Debug logging for Spring web components
-    com.your-application-package: DEBUG # Debug logging for your own application code
-    org.hibernate: DEBUG # Debug logging for Hibernate
