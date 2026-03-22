@@ -1,22 +1,20 @@
-
 package com.example.college.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.relational.core.mapping.Column;
 
-@Entity
 @Data
-@Table(name = "users")
+@Table("users")
 public class User {
 
  @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
  private Long id;
 
  private String username;
 
  private String password;
 
- @Enumerated(EnumType.STRING)
- private Role role;
+ private String role;
 }

@@ -1,4 +1,3 @@
-
 package com.example.college.service;
 
 import com.example.college.dto.LoginRequest;
@@ -9,6 +8,7 @@ import com.example.college.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -18,27 +18,32 @@ public class AuthService {
  private final PasswordEncoder passwordEncoder;
  private final JwtUtil jwtUtil;
 
- public String register(RegisterRequest request){
+ // ✅ Register (Reactive)
+ public Mono<String> register(RegisterRequest request){
 
   User user = new User();
   user.setUsername(request.getUsername());
   user.setPassword(passwordEncoder.encode(request.getPassword()));
-  user.setRole(request.getRole());
+  user.setRole(String.valueOf(request.getRole())); // should be String
 
-  userRepository.save(user);
-
-  return "User registered";
+  return userRepository.save(user)
+          .map(u -> "User registered");
  }
 
- public String login(LoginRequest request){
+ // ✅ Login (Reactive)
+ public Mono<String> login(LoginRequest request){
 
-  User user = userRepository.findByUsername(request.getUsername())
-          .orElseThrow();
+  return userRepository.findByUsername(request.getUsername())
+          .switchIfEmpty(Mono.error(new RuntimeException("User not found")))
+          .flatMap(user -> {
 
-  if(passwordEncoder.matches(request.getPassword(), user.getPassword())){
-   return jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-  }
+           if(passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            return Mono.just(
+                    jwtUtil.generateToken(user.getUsername(), user.getRole())
+            );
+           }
 
-  throw new RuntimeException("Invalid credentials");
+           return Mono.error(new RuntimeException("Invalid credentials"));
+          });
  }
 }

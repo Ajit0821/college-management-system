@@ -6,6 +6,8 @@ import com.example.college.repository.StudentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -13,11 +15,11 @@ public class StudentService {
 
  private final StudentRepository repository;
 
- public Student addStudent(Student student){
+ public Mono<Student> addStudent(Student student){
   return repository.save(student);
  }
 
- public List<Student> getStudents(){
+ public Flux<Student> getStudents(){
   return repository.findAll();
  }
 }

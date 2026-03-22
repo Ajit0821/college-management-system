@@ -1,16 +1,19 @@
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/postgres
     username: postgres
     password: root
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: 8081
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+logging:
+  level:
+    root: DEBUG
+    org.springframework.web: DEBUG # Debug logging for Spring web components
+    com.your-application-package: DEBUG # Debug logging for your own application code
+    org.hibernate: DEBUG # Debug logging for Hibernate
